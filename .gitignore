@@ -5,6 +5,8 @@ __pycache__/
 .eggs/
 dist/
 build/
+!elda-api/app/build/
+!elda-api/app/build/**
 .venv/
 venv/
 .env
