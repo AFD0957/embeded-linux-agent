@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elda.dev/schemas/patch_envelope.json",
+  "title": "PatchEnvelope",
+  "type": "object",
+  "required": ["version", "patches"],
+  "properties": {
+    "version": { "type": "string", "const": "1" },
+    "description": { "type": "string" },
+    "patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "unified_diff"],
+        "properties": {
+          "id": { "type": "string" },
+          "target_path": { "type": "string" },
+          "unified_diff": { "type": "string" },
+          "rationale": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${ELDA_POSTGRES_USER:?run scripts/init_compose_env.sh first}
+      POSTGRES_PASSWORD: ${ELDA_POSTGRES_PASSWORD:?run scripts/init_compose_env.sh first}
+      POSTGRES_DB: ${ELDA_POSTGRES_DB:-elda}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ELDA_POSTGRES_USER:-elda}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${ELDA_MINIO_ROOT_USER:?run scripts/init_compose_env.sh first}
+      MINIO_ROOT_PASSWORD: ${ELDA_MINIO_ROOT_PASSWORD:?run scripts/init_compose_env.sh first}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  milvus:
+    image: milvusdb/milvus:v2.3.4
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_USE_EMBED: "true"
+      COMMON_STORAGETYPE: local
+    ports:
+      - "127.0.0.1:19530:19530"
+    volumes:
+      - milvus_data:/var/lib/milvus
+
+  elda-api:
+    build:
+      context: .
+      dockerfile: elda-api/Dockerfile
+      args:
+        PIP_INDEX_URL: ${ELDA_PIP_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}
+    network_mode: host
+    init: true
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    pids_limit: -1
+    env_file:
+      - .env
+    environment:
+      ELDA_DATABASE_URL: ${ELDA_DATABASE_URL:?run scripts/init_compose_env.sh first}
+      ELDA_REDIS_URL: ${ELDA_REDIS_URL:-redis://127.0.0.1:6379/0}
+      ELDA_MILVUS_HOST: ${ELDA_MILVUS_HOST:-127.0.0.1}
+      ELDA_MILVUS_PORT: ${ELDA_MILVUS_PORT:-19530}
+      ELDA_MINIO_ENDPOINT: ${ELDA_MINIO_ENDPOINT:-127.0.0.1:9000}
+      ELDA_MINIO_ACCESS_KEY: ${ELDA_MINIO_ACCESS_KEY:?run scripts/init_compose_env.sh first}
+      ELDA_MINIO_SECRET_KEY: ${ELDA_MINIO_SECRET_KEY:?run scripts/init_compose_env.sh first}
+      ELDA_MINIO_BUCKET: ${ELDA_MINIO_BUCKET:-elda-artifacts}
+      ELDA_MINIO_SECURE: ${ELDA_MINIO_SECURE:-false}
+      ELDA_WORKER_START_DELAY: ${ELDA_WORKER_START_DELAY:-3}
+    volumes:
+      - ./secrets:/app/secrets:ro
+      - ./schemas:/app/schemas:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      milvus:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  postgres_data:
+  minio_data:
+  milvus_data:

@@ -1,0 +1,75 @@
+project:
+  name: icm20608-imx6ull
+  output_dir: output
+  api_url: http://localhost:8000
+
+target:
+  soc: imx6ull
+  arch: arm
+  kernel_version: "4.1.15"
+  kernel_source: vendor/kernel
+  git_branch: elda/icm20608-imx6ull
+  cross_compile: arm-linux-gnueabihf-
+
+model:
+  bailian_api_key: ${BAILIAN_API_KEY}
+  deepseek_api_key: ${DEEPSEEK_API_KEY}
+  code_model: qwen3-coder-plus
+  reasoning_model: deepseek-v4-pro
+  bailian_reasoning_model: qwen3-max
+  embedding_model: text-embedding-v4
+
+milvus:
+  host: localhost
+  port: 19530
+
+peripherals:
+  - id: icm20608_0
+    name: icm20608
+    enabled: true
+    bus: spi
+    driver_framework: iio
+    driver_module_path: drivers/iio
+    datasheet: docs/icm20608.pdf
+    function_requirements:
+      - read_chip_id
+      - init_device
+      - read_sensor_data
+      - expose_iio
+      - generate_test_app
+    board:
+      spi:
+        bus_id: 3
+        cs_gpio: GPIO1_IO20
+        mode: 0
+        max_frequency: 10000000
+      gpios:
+        irq: GPIO1_IO19
+      power:
+        vcc: 3.3V
+
+board:
+  dts: vendor/kernel/arch/arm/boot/dts/imx6ull-elda-demo.dts
+
+deploy:
+  mode: tftp_nfs_serial
+  tftp:
+    directory: deploy/tftp
+    zimage_name: zImage
+    dtb_name: imx6ull-elda-demo.dtb
+  nfs:
+    rootfs: deploy/nfs/rootfs
+    ko_path: root/drivers
+    app_path: root/tests
+  serial:
+    port: /dev/ttyUSB0
+    baudrate: 115200
+
+build:
+  max_fix_rounds: 10
+  auto_apply_patches: true
+  targets:
+    - module
+    - dtc
+    - zimage
+    - dtb

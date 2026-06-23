@@ -1,0 +1,11 @@
+vendor/kernel/*
+!vendor/kernel/.gitkeep
+output/
+workspace/
+reports/
+captures/
+deploy/tftp/*
+deploy/nfs/rootfs/root/**
+!deploy/nfs/rootfs/root/drivers/.gitkeep
+!deploy/nfs/rootfs/root/tests/.gitkeep
+docs/icm20608.pdf

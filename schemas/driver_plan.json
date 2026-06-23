@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elda.dev/schemas/driver_plan.json",
+  "title": "DriverPlan",
+  "type": "object",
+  "required": ["subsystem", "framework", "probe_flow"],
+  "properties": {
+    "subsystem": {
+      "type": "string",
+      "enum": ["iio", "input", "hwmon", "rtc", "led", "misc", "spi", "i2c"]
+    },
+    "framework": { "type": "string" },
+    "rationale": { "type": "string" },
+    "compatible": { "type": "string" },
+    "probe_flow": { "type": "array", "items": { "type": "string" } },
+    "remove_flow": { "type": "array", "items": { "type": "string" } },
+    "userspace_interface": { "type": "string" },
+    "main_functions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://elda.dev/schemas/build_errors.json",
+  "title": "BuildErrors",
+  "type": "object",
+  "required": ["errors"],
+  "properties": {
+    "round": { "type": "integer", "minimum": 0 },
+    "log_path": { "type": "string" },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "message"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "missing_header",
+              "signature_mismatch",
+              "struct_field",
+              "api_version",
+              "kconfig",
+              "makefile_path",
+              "dts_syntax",
+              "dtc",
+              "undefined_symbol",
+              "compiler_warning",
+              "other"
+            ]
+          },
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

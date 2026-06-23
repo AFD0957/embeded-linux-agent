@@ -1,0 +1,60 @@
+ELDA (Embedded Linux Driver Agent)
+Copyright 2026 ELDA Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+================================================================================
+Third-Party Software and Services
+================================================================================
+
+This product includes or depends upon the following third-party components.
+Component names and versions are also listed in DEPENDENCIES.txt.
+
+Python runtime and libraries (PyPI, installed via pip at deploy time)
+  Python 3.11.9
+  FastAPI, Uvicorn, Pydantic, SQLAlchemy, Alembic, asyncpg, Redis client,
+  httpx, Typer, Rich, GitPython, Jinja2, PyYAML, websockets, pymilvus,
+  MinIO client, jsonschema, Markdown, pytest, ruff, PyMuPDF, MinerU (optional)
+
+Container images (Docker Hub / vendor registries, pulled at deploy time)
+  python:3.11-slim-bookworm
+  postgres:15-alpine
+  redis:7-alpine
+  minio/minio
+  milvusdb/milvus:v2.3.4
+
+System tools (distribution packages or install scripts)
+  docker-compose 1.29.2
+  OpenSSL 1.1.1w (built locally on Ubuntu 16.04 via install script)
+  ripgrep 14.1.0
+  gcc-arm-linux-gnueabihf, device-tree-compiler, poppler-utils
+
+External services (network APIs, configured by the user)
+  Alibaba Cloud DashScope (Bailian compatible-mode API)
+  DeepSeek API
+
+Reference BSP and documentation (obtained separately by the user, not shipped)
+  NXP linux-imx kernel tree (branch imx_4.1.15_2.0.0_ga), GPL-2.0
+  InvenSense ICM20608 datasheet (user-provided PDF)
+
+Demo board device tree (demo/icm20608-imx6ull/board/imx6ull-elda-demo.dts)
+  Intended for use inside a GPL-2.0 Linux kernel source tree alongside
+  NXP imx6ull.dtsi; do not redistribute standalone outside kernel context
+  without complying with GPL-2.0.
+
+GitHub Actions (CI only)
+  actions/checkout@v4
+  actions/setup-python@v5
+
+Each third-party component is governed by its own license. Refer to the
+respective project for full license texts.

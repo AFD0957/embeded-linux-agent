@@ -1,0 +1,37 @@
+* text=auto eol=lf
+
+# Shell & scripts
+*.sh text eol=lf
+
+# Python
+*.py text eol=lf
+*.pyi text eol=lf
+
+# Config & data
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.json text eol=lf
+*.env text eol=lf
+.env.* text eol=lf
+
+# Docs
+*.md text eol=lf
+LICENSE text eol=lf
+
+# Docker / CI
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+
+# Binary (do not normalize)
+*.whl binary
+*.tar binary
+*.gz binary
+*.zip binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary

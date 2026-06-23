@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -e "./elda[dev]" -e "./elda-api[dev]"
+
+      - name: Ruff
+        run: ruff check elda/elda elda-api/app
+
+      - name: Compile
+        run: python -m compileall -q elda/elda elda-api/app
+
+      - name: Unit tests (exclude integration)
+        run: |
+          pytest elda/tests elda-api/tests -q -m "not integration"

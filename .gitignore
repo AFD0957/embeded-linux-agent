@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+*.egg
+
+# ELDA projects (user local)
+**/elda.yaml
+!demo/icm20608-imx6ull/elda.yaml
+!examples/elda.yaml.example
+workspace/
+output/
+reports/
+*.ko
+*.o
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Logs & temp
+*.log
+.tmp/
+output/logs/
+
+# Offline bundle
+vendor/wheels/
+vendor/docker-images.tar
+
+# Docker volumes
+data/
+milvus/
+
+# Secrets — local keys in secrets/api_keys.yaml (gitignored); template: api_keys.example.yaml
+secrets/api_keys.yaml
+
+# OS
+.DS_Store
+Thumbs.db

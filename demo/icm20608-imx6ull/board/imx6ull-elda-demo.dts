@@ -1,0 +1,136 @@
+/dts-v1/;
+
+#include "imx6ull.dtsi"
+
+/ {
+	model = "NXP i.MX6ULL ELDA Demo Board";
+	compatible = "fsl,imx6ull-elda-demo", "fsl,imx6ull";
+
+	chosen {
+		stdout-path = &uart1;
+	};
+
+	memory {
+		reg = <0x80000000 0x20000000>;
+	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		reg_vdd3v3: regulator-vdd3v3 {
+			compatible = "regulator-fixed";
+			regulator-name = "VDD_3V3";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-always-on;
+		};
+	};
+};
+
+&cpu0 {
+	arm-supply = <&reg_vdd3v3>;
+	soc-supply = <&reg_vdd3v3>;
+};
+
+&clks {
+	assigned-clocks = <&clks IMX6UL_CLK_ARM>,
+			  <&clks IMX6UL_CLK_PLL1_SW>,
+			  <&clks IMX6UL_CLK_PLL1_SYS>,
+			  <&clks IMX6UL_CLK_STEP>,
+			  <&clks IMX6UL_CLK_PLL2_BUS>,
+			  <&clks IMX6UL_CLK_PLL3_USB_OTG>,
+			  <&clks IMX6UL_CLK_PLL4_AUDIO>,
+			  <&clks IMX6UL_CLK_PLL5_VIDEO>,
+			  <&clks IMX6UL_CLK_PLL6_ENET>,
+			  <&clks IMX6UL_CLK_PLL7_USB_HOST>;
+	assigned-clock-rates = <792000000>, <792000000>, <396000000>,
+			       <396000000>, <528000000>, <480000000>,
+			       <722534400>, <650000000>, <500000000>,
+			       <480000000>;
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart1>;
+	status = "okay";
+};
+
+&iomuxc {
+	pinctrl_uart1: uart1grp {
+		fsl,pins = <
+			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX 0x1b0b0
+			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX 0x1b0b0
+		>;
+	};
+
+	pinctrl_ecspi3: ecspi3grp {
+		fsl,pins = <
+			MX6UL_PAD_LCD_DATA00__ECSPI3_MISO  0x10b0
+			MX6UL_PAD_LCD_DATA01__ECSPI3_MOSI  0x10b0
+			MX6UL_PAD_LCD_DATA02__ECSPI3_SCLK  0x10b0
+		>;
+	};
+
+	pinctrl_ecspi3_cs: ecspi3csgrp {
+		fsl,pins = <
+			MX6UL_PAD_LCD_DATA03__GPIO1_IO20  0x10b0
+		>;
+	};
+
+	pinctrl_icm20608_irq: icm20608irqgrp {
+		fsl,pins = <
+			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19  0x1b0b0
+		>;
+	};
+};
+
+&ecspi3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi3 &pinctrl_ecspi3_cs>;
+	cs-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
+	status = "okay";
+
+	icm20608@0 {
+		compatible = "invensense,icm20608";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <19 IRQ_TYPE_EDGE_RISING>;
+	};
+};
+
+&gpio1 {
+	icm20608-int {
+		gpio-hog;
+		gpios = <19 GPIO_ACTIVE_HIGH>;
+		input;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_icm20608_irq>;
+	};
+};
+
+&fec1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_enet1>;
+	phy-mode = "rmii";
+	status = "okay";
+};
+
+&iomuxc {
+	pinctrl_enet1: enet1grp {
+		fsl,pins = <
+			MX6UL_PAD_ENET_MDC__ENET_MDC           0x1b0b0
+			MX6UL_PAD_ENET_MDIO__ENET_MDIO         0x1b0b0
+			MX6UL_PAD_ENET_RX_ER__ENET_RX_ER       0x1b0b0
+			MX6UL_PAD_ENET_RX_EN__ENET_RX_EN       0x1b0b0
+			MX6UL_PAD_ENET_RXD0__ENET_RX_DATA0     0x1b0b0
+			MX6UL_PAD_ENET_RXD1__ENET_RX_DATA1     0x1b0b0
+			MX6UL_PAD_ENET_TX_EN__ENET_TX_EN       0x1b0b0
+			MX6UL_PAD_ENET_TXD0__ENET_TX_DATA0     0x1b0b0
+			MX6UL_PAD_ENET_TXD1__ENET_TX_DATA1     0x1b0b0
+			MX6UL_PAD_ENET_CRS__GPIO2_IO08         0x1b0b0
+		>;
+	};
+};
