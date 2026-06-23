@@ -8,6 +8,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/ZHChen2000/embeded-linux-agent/actions/workflows/ci.yml"><img src="https://github.com/ZHChen2000/embeded-linux-agent/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <a href="DEPENDENCIES.txt"><img src="https://img.shields.io/badge/elda-0.3.0-4338ca?style=flat-square" alt="elda 0.3.0"/></a>
   <img src="https://img.shields.io/badge/Python-3.11-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python 3.11"/>
   <img src="https://img.shields.io/badge/FastAPI-0.111+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>

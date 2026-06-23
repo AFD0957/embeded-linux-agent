@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/ZHChen2000/embeded-linux-agent/actions/workflows/ci.yml"><img src="https://github.com/ZHChen2000/embeded-linux-agent/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <img src="https://img.shields.io/badge/ingest-手册解析-f97316?style=flat-square" alt="ingest"/>
   <img src="https://img.shields.io/badge/verify-硬件信息验证-ea580c?style=flat-square" alt="verify"/>
   <img src="https://img.shields.io/badge/plan-方案规划-dc2626?style=flat-square" alt="plan"/>
